@@ -5,9 +5,9 @@
 namespace UnoSemux {
 
 GP_ENUM(UNOSEMUXLIGHTCORE_API, UnoSemuxNetworkType,
-	MAINNET	= 0,
-	TESTNET	= 1,
-	DEVNET	= 2
+    MAINNET = 0,
+    TESTNET = 1,
+    DEVNET  = 2
 );
 
 }//namespace UnoSemux

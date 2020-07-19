@@ -6,30 +6,30 @@ UnoSemuxTransactionSign::UnoSemuxTransactionSign (void) noexcept
 {
 }
 
-UnoSemuxTransactionSign::UnoSemuxTransactionSign (GpBytesArray&& aTxData,
-												  GpBytesArray&& aTxHash,
-												  GpBytesArray&& aSign,
-												  GpBytesArray&& aPubKeyNoPrefix) noexcept:
-iTxData(std::move(aTxData)),
-iTxHash(std::move(aTxHash)),
+UnoSemuxTransactionSign::UnoSemuxTransactionSign (GpBytesArray&& aData,
+                                                  GpBytesArray&& aHash,
+                                                  GpBytesArray&& aSign,
+                                                  GpBytesArray&& aPublicKey) noexcept:
+iData(std::move(aData)),
+iHash(std::move(aHash)),
 iSign(std::move(aSign)),
-iPubKeyNoPrefix(std::move(aPubKeyNoPrefix))
+iPublicKey(std::move(aPublicKey))
 {
 }
 
 UnoSemuxTransactionSign::UnoSemuxTransactionSign (const UnoSemuxTransactionSign& aSign):
-iTxData(aSign.iTxData),
-iTxHash(aSign.iTxHash),
+iData(aSign.iData),
+iHash(aSign.iHash),
 iSign(aSign.iSign),
-iPubKeyNoPrefix(aSign.iPubKeyNoPrefix)
+iPublicKey(aSign.iPublicKey)
 {
 }
 
 UnoSemuxTransactionSign::UnoSemuxTransactionSign (UnoSemuxTransactionSign&& aSign) noexcept:
-iTxData(std::move(aSign.iTxData)),
-iTxHash(std::move(aSign.iTxHash)),
+iData(std::move(aSign.iData)),
+iHash(std::move(aSign.iHash)),
 iSign(std::move(aSign.iSign)),
-iPubKeyNoPrefix(std::move(aSign.iPubKeyNoPrefix))
+iPublicKey(std::move(aSign.iPublicKey))
 {
 }
 
@@ -37,26 +37,25 @@ UnoSemuxTransactionSign::~UnoSemuxTransactionSign (void) noexcept
 {
 }
 
-GpBytesArray	UnoSemuxTransactionSign::Encode (void) const
+GpBytesArray    UnoSemuxTransactionSign::Encode (void) const
 {
+    GpBytesArray res;
+    res.reserve(  iData.size()
+                + iHash.size()
+                + iSign.size()
+                + iPublicKey.size());
 
-	GpBytesArray res;
-	res.reserve(  iTxData.size()
-				+ iTxHash.size()
-				+ iSign.size()
-				+ iPubKeyNoPrefix.size());
+    GpByteWriterStorageByteArray    writerStorage(res);
+    GpByteWriter                    writer(writerStorage);
 
-	GpByteOStreamByteArray ostream(res);
+    writer.BytesWithLen(iHash);
+    writer.BytesWithLen(iData);
 
-	ostream.CompactSInt32(NumOps::SConvert<s_int_32>(iTxHash.size()));
-	ostream.Bytes(iTxHash);
-	ostream.CompactSInt32(NumOps::SConvert<s_int_32>(iTxData.size()));
-	ostream.Bytes(iTxData);
-	ostream.CompactSInt32(NumOps::SConvert<s_int_32>(iSign.size() + iPubKeyNoPrefix.size()));
-	ostream.Bytes(iSign);
-	ostream.Bytes(iPubKeyNoPrefix);
+    writer.CompactSInt32(NumOps::SConvert<s_int_32>(iSign.size() + iPublicKey.size()));
+    writer.Bytes(iSign);
+    writer.Bytes(iPublicKey);
 
-	return res;
+    return res;
 }
 
 }//namespace UnoSemux

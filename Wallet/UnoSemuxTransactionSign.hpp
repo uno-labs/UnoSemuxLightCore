@@ -7,27 +7,30 @@ namespace UnoSemux {
 class UNOSEMUXLIGHTCORE_API UnoSemuxTransactionSign
 {
 public:
-							UnoSemuxTransactionSign		(void) noexcept;
-							UnoSemuxTransactionSign		(GpBytesArray&&	aTxData,
-														 GpBytesArray&& aTxHash,
-														 GpBytesArray&& aSign,
-														 GpBytesArray&& aPubKeyNoPrefix) noexcept;
-							UnoSemuxTransactionSign		(const UnoSemuxTransactionSign& aSign);
-							UnoSemuxTransactionSign		(UnoSemuxTransactionSign&& aSign) noexcept;
-							~UnoSemuxTransactionSign	(void) noexcept;
+    CLASS_DECLARE_DEFAULTS(UnoSemuxTransactionSign)
 
-	const GpBytesArray&		TxData						(void) const noexcept {return iTxData;}
-	const GpBytesArray&		TxHash						(void) const noexcept {return iTxHash;}
-	const GpBytesArray&		Sign						(void) const noexcept {return iSign;}
-	const GpBytesArray&		PubKeyNoPrefix				(void) const noexcept {return iPubKeyNoPrefix;}
+public:
+                            UnoSemuxTransactionSign     (void) noexcept;
+                            UnoSemuxTransactionSign     (GpBytesArray&& aData,
+                                                         GpBytesArray&& aHash,
+                                                         GpBytesArray&& aSign,
+                                                         GpBytesArray&& aPublicKey) noexcept;
+                            UnoSemuxTransactionSign     (const UnoSemuxTransactionSign& aSign);
+                            UnoSemuxTransactionSign     (UnoSemuxTransactionSign&& aSign) noexcept;
+                            ~UnoSemuxTransactionSign    (void) noexcept;
 
-	GpBytesArray			Encode						(void) const;
+    const GpBytesArray&     Data                        (void) const noexcept {return iData;}
+    const GpBytesArray&     Hash                        (void) const noexcept {return iHash;}
+    const GpBytesArray&     Sign                        (void) const noexcept {return iSign;}
+    const GpBytesArray&     PublicKey                   (void) const noexcept {return iPublicKey;}
+
+    GpBytesArray            Encode                      (void) const;
 
 private:
-	GpBytesArray			iTxData;
-	GpBytesArray			iTxHash;
-	GpBytesArray			iSign;
-	GpBytesArray			iPubKeyNoPrefix;
+    GpBytesArray            iData;
+    GpBytesArray            iHash;
+    GpBytesArray            iSign;
+    GpBytesArray            iPublicKey;
 };
 
 }//namespace UnoSemux

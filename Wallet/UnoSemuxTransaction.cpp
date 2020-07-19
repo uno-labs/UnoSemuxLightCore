@@ -34,16 +34,16 @@ iGasPrice(std::move(aTransaction.iGasPrice))
 {
 }
 
-UnoSemuxTransaction::UnoSemuxTransaction (const NetworkTypeTE		aNetworkType,
-										  const TransactionTypeTE	aType,
-										  const GpBytesArray&		aAddrTo,
-										  const nanosem_t			aValue,
-										  const nanosem_t			aFee,
-										  const s_int_64			aNonce,
-										  const unix_ts_ms_t		aTimestamp,
-										  const GpBytesArray&		aData,
-										  const semgas_t			aGas,
-										  const nanosem_t			aGasPrice):
+UnoSemuxTransaction::UnoSemuxTransaction (const NetworkTypeTE       aNetworkType,
+                                          const TransactionTypeTE   aType,
+                                          const GpBytesArray&       aAddrTo,
+                                          const nanosem_t           aValue,
+                                          const nanosem_t           aFee,
+                                          const s_int_64            aNonce,
+                                          const unix_ts_ms_t        aTimestamp,
+                                          const GpBytesArray&       aData,
+                                          const semgas_t            aGas,
+                                          const nanosem_t           aGasPrice):
 iNetworkType(aNetworkType),
 iType(aType),
 iAddrTo(aAddrTo),
@@ -57,16 +57,16 @@ iGasPrice(aGasPrice)
 {
 }
 
-UnoSemuxTransaction::UnoSemuxTransaction (const NetworkTypeTE		aNetworkType,
-										  const TransactionTypeTE	aType,
-										  GpBytesArray&&			aAddrTo,
-										  const nanosem_t			aValue,
-										  const nanosem_t			aFee,
-										  const s_int_64			aNonce,
-										  const unix_ts_ms_t		aTimestamp,
-										  GpBytesArray&&			aData,
-										  const semgas_t			aGas,
-										  const nanosem_t			aGasPrice) noexcept:
+UnoSemuxTransaction::UnoSemuxTransaction (const NetworkTypeTE       aNetworkType,
+                                          const TransactionTypeTE   aType,
+                                          GpBytesArray&&            aAddrTo,
+                                          const nanosem_t           aValue,
+                                          const nanosem_t           aFee,
+                                          const s_int_64            aNonce,
+                                          const unix_ts_ms_t        aTimestamp,
+                                          GpBytesArray&&            aData,
+                                          const semgas_t            aGas,
+                                          const nanosem_t           aGasPrice) noexcept:
 iNetworkType(aNetworkType),
 iType(aType),
 iAddrTo(std::move(aAddrTo)),
@@ -84,32 +84,31 @@ UnoSemuxTransaction::~UnoSemuxTransaction (void) noexcept
 {
 }
 
-GpBytesArray	UnoSemuxTransaction::Encode (void) const
+GpBytesArray    UnoSemuxTransaction::Encode (void) const
 {
-	GpBytesArray res;
-	res.reserve(64 + iData.size());
+    GpBytesArray res;
+    res.reserve(64 + iData.size());
 
-	GpByteOStreamByteArray ostream(res);
+    GpByteWriterStorageByteArray    writerStorage(res);
+    GpByteWriter                    writer(writerStorage);
 
-	ostream.UInt8(u_int_8(iNetworkType));
-	ostream.UInt8(u_int_8(iType));
-	ostream.CompactSInt32(NumOps::SConvert<s_int_32>(iAddrTo.size()));
-	ostream.Bytes(iAddrTo);
-	ostream.SInt64(iValue.ValueAs<s_int_64>());
-	ostream.SInt64(iFee.ValueAs<s_int_64>());
-	ostream.SInt64(iNonce);
-	ostream.SInt64(iTimestamp.ValueAs<s_int_64>());
-	ostream.CompactSInt32(NumOps::SConvert<s_int_32>(iData.size()));
-	ostream.Bytes(iData);
+    writer.UInt8(u_int_8(iNetworkType));
+    writer.UInt8(u_int_8(iType));
+    writer.BytesWithLen(iAddrTo);
+    writer.SInt64(iValue.ValueAs<s_int_64>());
+    writer.SInt64(iFee.ValueAs<s_int_64>());
+    writer.SInt64(iNonce);
+    writer.SInt64(iTimestamp.ValueAs<s_int_64>());
+    writer.BytesWithLen(iData);
 
-	if (   (iType == TransactionTypeT::CALL)
-		|| (iType == TransactionTypeT::CREATE))
-	{
-		ostream.SInt64(iGas.ValueAs<s_int_64>());
-		ostream.SInt64(iGasPrice.ValueAs<s_int_64>());
-	}
+    if (   (iType == TransactionTypeT::CALL)
+        || (iType == TransactionTypeT::CREATE))
+    {
+        writer.SInt64(iGas.ValueAs<s_int_64>());
+        writer.SInt64(iGasPrice.ValueAs<s_int_64>());
+    }
 
-	return res;
+    return res;
 }
 
 }//namespace UnoSemux

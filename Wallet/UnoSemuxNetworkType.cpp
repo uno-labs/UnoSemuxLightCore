@@ -2,6 +2,6 @@
 
 namespace UnoSemux {
 
-GP_ENUM_IMPL(UnoSemuxNetworkType);
+GP_ENUM_IMPL(UnoSemuxNetworkType)
 
 }//namespace UnoSemux

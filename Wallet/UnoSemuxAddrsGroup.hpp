@@ -13,17 +13,19 @@ public:
     using AddrListT = UnoSemuxAddr::C::MapStr::SP;
 
 public:
-                            UnoSemuxAddrsGroup      (GpCryptoKeyFactory::SP aFactory);
-                            ~UnoSemuxAddrsGroup     (void) noexcept;
+                                UnoSemuxAddrsGroup      (GpCryptoKeyFactory::SP aFactory);
+                                ~UnoSemuxAddrsGroup     (void) noexcept;
 
-    UnoSemuxAddr::SP        GenNext                 (void);
-    void                    Delete                  (GpRawPtrCharR aAddrStrHex);
-    UnoSemuxAddr::SP        Find                    (GpRawPtrCharR aAddrStrHex);
-    bool                    IsContainAddr           (GpRawPtrCharR aAddrStrHex) const;
+    UnoSemuxAddr::SP            GenNext                 (void);
+    void                        Delete                  (GpRawPtrCharR aAddrStrHex);
+    UnoSemuxAddr::SP            Find                    (GpRawPtrCharR aAddrStrHex);
+    bool                        IsContainAddr           (GpRawPtrCharR aAddrStrHex) const;
+    const AddrListT&            AddrsList               (void) const noexcept {return iAddrsList;}
+    const GpCryptoKeyFactory&   Factory                 (void) const {return iFactory.VC();}
 
 private:
-    GpCryptoKeyFactory::SP  iFactory;
-    AddrListT               iAddrsList;
+    GpCryptoKeyFactory::SP      iFactory;
+    AddrListT                   iAddrsList;
 };
 
 }//UnoSemux

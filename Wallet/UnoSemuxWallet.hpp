@@ -1,7 +1,6 @@
 #pragma once
 
 #include "UnoSemuxAddrsGroup.hpp"
-#include "UnoSemuxWalletUtils.hpp"
 
 namespace UnoSemux {
 
@@ -11,20 +10,31 @@ public:
     CLASS_REMOVE_CTRS_EXCEPT_DEFAULT(UnoSemuxWallet)
     CLASS_DECLARE_DEFAULTS(UnoSemuxWallet)
 
-public:
-                                    UnoSemuxWallet      (void);
-                                    ~UnoSemuxWallet     (void) noexcept;
+    using HDAddrGroupsT = UnoSemuxAddrsGroup::C::MapCountT::SP;
 
-    UnoSemuxAddr::SP                GenNextRndAddr      (void);
-    UnoSemuxAddr::SP                GenNextHDAddr       (const count_t aHDGroupId);
-    void                            DeleteAddr          (GpRawPtrCharR aAddrStrHex);
-    UnoSemuxAddr::SP                FindAddr            (GpRawPtrCharR aAddrStrHex);
-    count_t                         AddHDGroup          (GpRawPtrCharR aMnemonic, GpRawPtrCharR aPassword);
-    //void                          DeleteHDGroup       (const count_t aHDGroupId);
+public:
+                                UnoSemuxWallet      (void);
+                                ~UnoSemuxWallet     (void) noexcept;
+
+    UnoSemuxAddr::SP            GenNextRndAddr      (void);
+    UnoSemuxAddr::SP            GenNextHDAddr       (const count_t aHDGroupId);
+    void                        DeleteAddr          (GpRawPtrCharR aAddrStrHex);
+    UnoSemuxAddr::SP            FindAddr            (GpRawPtrCharR aAddrStrHex);
+    count_t                     AddHDGroup          (GpRawPtrCharR aMnemonic, GpRawPtrCharR aPassword);
+    void                        DeleteHDGroup       (const count_t aHDGroupId);
+
+    const UnoSemuxAddrsGroup&   RndAddrGroup        (void) const noexcept {return iRndAddrGroup;}
+    const HDAddrGroupsT&        HDAddrGroups        (void) const noexcept {return iHDAddrGroups;}
+    count_t                     HDAddrGroupLastId   (void) const noexcept {return iHDAddrGroupLastId;}
+
+    GpBytesArray                Seserialize         (GpRawPtrCharR aPassword) const;
+    std::string                 SeserializeHex      (GpRawPtrCharR aPassword) const;
+    GpBytesArray                SeserializeBase64   (GpRawPtrCharR aPassword) const;
 
 private:
-    UnoSemuxAddrsGroup              iRndAddrGroup;
-    UnoSemuxAddrsGroup::C::Vec::SP  iHDAddrGroups;
+    UnoSemuxAddrsGroup          iRndAddrGroup;
+    HDAddrGroupsT               iHDAddrGroups;
+    count_t                     iHDAddrGroupLastId = 0_cnt;
 };
 
 }//UnoSemux

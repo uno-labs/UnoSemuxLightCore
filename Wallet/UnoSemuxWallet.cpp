@@ -1,4 +1,5 @@
 #include "UnoSemuxWallet.hpp"
+#include "UnoSemuxWalletUtils.hpp"
 
 namespace UnoSemux {
 
@@ -18,7 +19,7 @@ UnoSemuxAddr::SP    UnoSemuxWallet::GenNextRndAddr (void)
 
 UnoSemuxAddr::SP    UnoSemuxWallet::GenNextHDAddr (const count_t aHDGroupId)
 {
-    return iHDAddrGroups.at(aHDGroupId.ValueAs<size_t>()).V().GenNext();
+    return iHDAddrGroups.at(aHDGroupId).V().GenNext();
 }
 
 void    UnoSemuxWallet::DeleteAddr (GpRawPtrCharR aAddrStrHex)
@@ -31,9 +32,10 @@ void    UnoSemuxWallet::DeleteAddr (GpRawPtrCharR aAddrStrHex)
 
     for (auto& iter: iHDAddrGroups)
     {
-        if (iter.VC().IsContainAddr(aAddrStrHex))
+        auto& g = iter.second.V();
+        if (g.IsContainAddr(aAddrStrHex))
         {
-            iter.Vn().Delete(aAddrStrHex);
+            g.Delete(aAddrStrHex);
             return;
         }
     }
@@ -50,9 +52,11 @@ UnoSemuxAddr::SP    UnoSemuxWallet::FindAddr (GpRawPtrCharR aAddrStrHex)
 
     for (auto& iter: iHDAddrGroups)
     {
-        if (iter.VC().IsContainAddr(aAddrStrHex))
+        auto& g = iter.second.V();
+
+        if (g.IsContainAddr(aAddrStrHex))
         {
-            return iter.Vn().Find(aAddrStrHex);
+            return g.Find(aAddrStrHex);
         }
     }
 
@@ -62,9 +66,34 @@ UnoSemuxAddr::SP    UnoSemuxWallet::FindAddr (GpRawPtrCharR aAddrStrHex)
 count_t UnoSemuxWallet::AddHDGroup (GpRawPtrCharR aMnemonic, GpRawPtrCharR aPassword)
 {
     GpCryptoKeyFactory::SP hdKeyFactory = UnoSemuxWalletUtils::SNewHDKeyFactoryMnemonic(aMnemonic, aPassword);
-    iHDAddrGroups.emplace_back(UnoSemuxAddrsGroup::SP::SNew(hdKeyFactory));
 
-    return count_t::SMake(iHDAddrGroups.size()) - 1_cnt;
+    iHDAddrGroupLastId++;
+
+    iHDAddrGroups.insert({iHDAddrGroupLastId, UnoSemuxAddrsGroup::SP::SNew(hdKeyFactory)});
+
+    return iHDAddrGroupLastId;
+}
+
+void    UnoSemuxWallet::DeleteHDGroup (const count_t aHDGroupId)
+{
+    iHDAddrGroups.erase(aHDGroupId);
+}
+
+GpBytesArray    UnoSemuxWallet::Seserialize (GpRawPtrCharR aPassword) const
+{
+    return UnoSemuxWalletUtils::SWalletSeserialize(*this, aPassword);
+}
+
+std::string UnoSemuxWallet::SeserializeHex (GpRawPtrCharR aPassword) const
+{
+    GpBytesArray data = Seserialize(aPassword);
+    return GpStringOps::SFromBytes(data);
+}
+
+GpBytesArray    UnoSemuxWallet::SeserializeBase64 (GpRawPtrCharR aPassword) const
+{
+    GpBytesArray data = Seserialize(aPassword);
+    return GpEncoders::SBinToBase64(data);
 }
 
 }//UnoSemux

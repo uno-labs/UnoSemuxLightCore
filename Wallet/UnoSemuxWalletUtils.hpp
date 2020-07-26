@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UnoSemuxAddr.hpp"
+#include "UnoSemuxWallet.hpp"
 
 namespace UnoSemux {
 
@@ -8,6 +9,8 @@ class UNOSEMUXLIGHTCORE_API UnoSemuxWalletUtils
 {
 public:
     CLASS_REMOVE_CTRS(UnoSemuxWalletUtils)
+
+    static constexpr s_int_8        UNO_SEMUX_WALLET_FORMAT_VERSION (void) noexcept {return 1;}
 
 public:
     static GpSecureStorage          SNewMnemonic                    (void);
@@ -21,6 +24,14 @@ public:
     static UnoSemuxAddr::SP         SNewAddrFromFactory             (GpCryptoKeyFactory& aFactory);
     static UnoSemuxAddr::SP         SNewAddrFromPrivateKey          (GpRawPtrByteR aPrivateKey);
     static UnoSemuxAddr::SP         SNewAddrFromPrivateKeyStrHex    (GpRawPtrCharR aPrivateKeyStrHex);
+
+    static UnoSemuxWallet::SP       SWalletDeserialize              (GpRawPtrCharR aPassword);
+    static GpBytesArray             SWalletSeserialize              (const UnoSemuxWallet&  aWallet,
+                                                                     GpRawPtrCharR          aPassword);
+
+private:
+    static void                     SAddrGroupSeserialize           (GpByteWriter&              aWriter,
+                                                                     const UnoSemuxAddrsGroup&  aAddrGroup);
 
 private:
     static const GpMnemonicCodeGen::WordListT   sWordListEN;

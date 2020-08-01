@@ -28,7 +28,7 @@ compiler_gcc{
 }
 
 #c++20
-CONFIG			+=	c++20
+CONFIG			+=	c++2a
 QMAKE_CXXFLAGS	+=	-std=gnu++2a
 
 QMAKE_CXXFLAGS	+= -fvisibility=hidden -fvisibility-inlines-hidden
@@ -131,6 +131,7 @@ INCLUDEPATH += \
 	../Extras/Boost/boost_1_72_0$$BOOST_POSTFIX
 
 SOURCES += \
+    Examples/UnoSemuxWalletExamples.cpp \
     UnoSemuxLightCore.cpp \
     Wallet/UnoSemuxAddr.cpp \
     Wallet/UnoSemuxAddrsGroup.cpp \
@@ -142,6 +143,8 @@ SOURCES += \
     Wallet/UnoSemuxWalletUtils.cpp
 
 HEADERS += \
+    Examples/UnoSemuxLightCoreExamples.hpp \
+    Examples/UnoSemuxWalletExamples.hpp \
     UnoSemuxLightCore_global.hpp \
     UnoSemuxLightCore.hpp \
     Utils/UnoSemuxUnits.hpp \

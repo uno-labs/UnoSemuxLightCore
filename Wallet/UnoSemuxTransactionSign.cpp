@@ -40,8 +40,8 @@ UnoSemuxTransactionSign::~UnoSemuxTransactionSign (void) noexcept
 GpBytesArray    UnoSemuxTransactionSign::Encode (void) const
 {
     GpBytesArray res;
-    res.reserve(  iData.size()
-                + iHash.size()
+    res.reserve(  iHash.size()
+                + iData.size()
                 + iSign.size()
                 + iPublicKey.size());
 

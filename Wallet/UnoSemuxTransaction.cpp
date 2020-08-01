@@ -2,10 +2,6 @@
 
 namespace UnoSemux {
 
-UnoSemuxTransaction::UnoSemuxTransaction (void) noexcept
-{
-}
-
 UnoSemuxTransaction::UnoSemuxTransaction (const UnoSemuxTransaction& aTransaction):
 iNetworkType(aTransaction.iNetworkType),
 iType(aTransaction.iType),
@@ -36,29 +32,6 @@ iGasPrice(std::move(aTransaction.iGasPrice))
 
 UnoSemuxTransaction::UnoSemuxTransaction (const NetworkTypeTE       aNetworkType,
                                           const TransactionTypeTE   aType,
-                                          const GpBytesArray&       aAddrTo,
-                                          const nanosem_t           aValue,
-                                          const nanosem_t           aFee,
-                                          const s_int_64            aNonce,
-                                          const unix_ts_ms_t        aTimestamp,
-                                          const GpBytesArray&       aData,
-                                          const semgas_t            aGas,
-                                          const nanosem_t           aGasPrice):
-iNetworkType(aNetworkType),
-iType(aType),
-iAddrTo(aAddrTo),
-iValue(aValue),
-iFee(aFee),
-iNonce(aNonce),
-iTimestamp(aTimestamp),
-iData(aData),
-iGas(aGas),
-iGasPrice(aGasPrice)
-{
-}
-
-UnoSemuxTransaction::UnoSemuxTransaction (const NetworkTypeTE       aNetworkType,
-                                          const TransactionTypeTE   aType,
                                           GpBytesArray&&            aAddrTo,
                                           const nanosem_t           aValue,
                                           const nanosem_t           aFee,
@@ -80,8 +53,130 @@ iGasPrice(aGasPrice)
 {
 }
 
+
 UnoSemuxTransaction::~UnoSemuxTransaction (void) noexcept
 {
+}
+
+UnoSemuxTransaction UnoSemuxTransaction::STransfer (const NetworkTypeTE aNetworkType,
+                                                    GpRawPtrCharR       aAddrToStrHex,
+                                                    const nanosem_t     aValue,
+                                                    const nanosem_t     aFee,
+                                                    const s_int_64      aNonce,
+                                                    const unix_ts_ms_t  aTimestamp,
+                                                    GpRawPtrByteR       aData)
+{
+    return UnoSemuxTransaction(aNetworkType,
+                               TransactionTypeTE::TRANSFER,
+                               GpStringOps::SToBytes(aAddrToStrHex),
+                               aValue,
+                               aFee,
+                               aNonce,
+                               aTimestamp,
+                               aData.ToByteArray(),
+                               0_semgas,
+                               0_usem);
+}
+
+UnoSemuxTransaction UnoSemuxTransaction::SDelegate (const NetworkTypeTE aNetworkType,
+                                                    GpRawPtrCharR       aAddrToStrHex,
+                                                    const nanosem_t     aValue,
+                                                    const nanosem_t     aFee,
+                                                    const s_int_64      aNonce,
+                                                    const unix_ts_ms_t  aTimestamp,
+                                                    GpRawPtrCharR       aName)
+{
+    return UnoSemuxTransaction(aNetworkType,
+                               TransactionTypeTE::DELEGATE,
+                               GpStringOps::SToBytes(aAddrToStrHex),
+                               aValue,
+                               aFee,
+                               aNonce,
+                               aTimestamp,
+                               aName.ToByteArray(),
+                               0_semgas,
+                               0_usem);
+}
+
+UnoSemuxTransaction UnoSemuxTransaction::SVote (const NetworkTypeTE aNetworkType,
+                                                GpRawPtrCharR       aAddrToStrHex,
+                                                const nanosem_t     aValue,
+                                                const nanosem_t     aFee,
+                                                const s_int_64      aNonce,
+                                                const unix_ts_ms_t  aTimestamp,
+                                                GpRawPtrByteR       aData)
+{
+    return UnoSemuxTransaction(aNetworkType,
+                               TransactionTypeTE::VOTE,
+                               GpStringOps::SToBytes(aAddrToStrHex),
+                               aValue,
+                               aFee,
+                               aNonce,
+                               aTimestamp,
+                               aData.ToByteArray(),
+                               0_semgas,
+                               0_usem);
+}
+
+UnoSemuxTransaction UnoSemuxTransaction::SUnvote (const NetworkTypeTE   aNetworkType,
+                                                  GpRawPtrCharR         aAddrToStrHex,
+                                                  const nanosem_t       aValue,
+                                                  const nanosem_t       aFee,
+                                                  const s_int_64        aNonce,
+                                                  const unix_ts_ms_t    aTimestamp,
+                                                  GpRawPtrByteR         aData)
+{
+    return UnoSemuxTransaction(aNetworkType,
+                               TransactionTypeTE::UNVOTE,
+                               GpStringOps::SToBytes(aAddrToStrHex),
+                               aValue,
+                               aFee,
+                               aNonce,
+                               aTimestamp,
+                               aData.ToByteArray(),
+                               0_semgas,
+                               0_usem);
+}
+
+UnoSemuxTransaction UnoSemuxTransaction::SCreate (const NetworkTypeTE   aNetworkType,
+                                                  GpRawPtrCharR         aAddrToStrHex,
+                                                  const s_int_64        aNonce,
+                                                  const unix_ts_ms_t    aTimestamp,
+                                                  GpRawPtrByteR         aData,
+                                                  const semgas_t        aGas,
+                                                  const nanosem_t       aGasPrice)
+{
+    return UnoSemuxTransaction(aNetworkType,
+                               TransactionTypeTE::CREATE,
+                               GpStringOps::SToBytes(aAddrToStrHex),
+                               0_usem,
+                               0_usem,
+                               aNonce,
+                               aTimestamp,
+                               aData.ToByteArray(),
+                               aGas,
+                               aGasPrice);
+}
+
+UnoSemuxTransaction UnoSemuxTransaction::SCall (const NetworkTypeTE     aNetworkType,
+                                                GpRawPtrCharR           aAddrToStrHex,
+                                                const nanosem_t         aValue,
+                                                const s_int_64          aNonce,
+                                                const unix_ts_ms_t      aTimestamp,
+                                                GpRawPtrByteR           aData,
+                                                const semgas_t          aGas,
+                                                const nanosem_t         aGasPrice)
+{
+    return UnoSemuxTransaction(aNetworkType,
+                               TransactionTypeTE::CREATE,
+                               GpStringOps::SToBytes(aAddrToStrHex),
+                               aValue,
+                               0_usem,
+                               aNonce,
+                               aTimestamp,
+                               aData.ToByteArray(),
+                               aGas,
+                               aGasPrice);
 }
 
 GpBytesArray    UnoSemuxTransaction::Encode (void) const

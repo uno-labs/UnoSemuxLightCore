@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Utils/UnoSemuxUtils.hpp"
-#include "Wallet/UnoSemuxWallet.hpp"
+#include "Wallet/UnoSemuxWalletUtils.hpp"
 
 namespace UnoSemux {
 

@@ -18,6 +18,7 @@ public:
 
     UnoSemuxAddr::SP            GenNextRndAddr      (void);
     UnoSemuxAddr::SP            GenNextHDAddr       (const count_t aHDGroupId);
+    UnoSemuxAddr::SP            GenHDAddr           (const count_t aHDGroupId, const count_t aAddrId);
     void                        DeleteAddr          (GpRawPtrCharR aAddrStrHex);
     UnoSemuxAddr::SP            FindAddr            (GpRawPtrCharR aAddrStrHex);
     count_t                     AddHDGroup          (GpRawPtrCharR aMnemonic, GpRawPtrCharR aPassword);
@@ -29,7 +30,11 @@ public:
 
     GpBytesArray                Seserialize         (GpRawPtrCharR aPassword) const;
     std::string                 SeserializeHex      (GpRawPtrCharR aPassword) const;
-    GpBytesArray                SeserializeBase64   (GpRawPtrCharR aPassword) const;
+    //GpBytesArray              SeserializeBase64   (GpRawPtrCharR aPassword) const;
+
+    void                        Deseserialize       (GpRawPtrByteR aData, GpRawPtrCharR aPassword);
+    void                        DeseserializeHex    (GpRawPtrCharR aDataStrHex, GpRawPtrCharR aPassword);
+    void                        DeseserializeBase64 (GpRawPtrCharR aDataBase64, GpRawPtrCharR aPassword);
 
 private:
     UnoSemuxAddrsGroup          iRndAddrGroup;

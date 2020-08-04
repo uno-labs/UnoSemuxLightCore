@@ -7,27 +7,38 @@ namespace UnoSemux {
 class UNOSEMUXLIGHTCORE_API UnoSemuxTransactionSign
 {
 public:
-							UnoSemuxTransactionSign		(void) noexcept;
-							UnoSemuxTransactionSign		(GpBytesArray&&	aTxData,
-														 GpBytesArray&& aTxHash,
-														 GpBytesArray&& aSign,
-														 GpBytesArray&& aPubKeyNoPrefix) noexcept;
-							UnoSemuxTransactionSign		(const UnoSemuxTransactionSign& aSign);
-							UnoSemuxTransactionSign		(UnoSemuxTransactionSign&& aSign) noexcept;
-							~UnoSemuxTransactionSign	(void) noexcept;
+    CLASS_DECLARE_DEFAULTS(UnoSemuxTransactionSign)
 
-	const GpBytesArray&		TxData						(void) const noexcept {return iTxData;}
-	const GpBytesArray&		TxHash						(void) const noexcept {return iTxHash;}
-	const GpBytesArray&		Sign						(void) const noexcept {return iSign;}
-	const GpBytesArray&		PubKeyNoPrefix				(void) const noexcept {return iPubKeyNoPrefix;}
+public:
+                                UnoSemuxTransactionSign     (void) noexcept;
+                                UnoSemuxTransactionSign     (GpBytesArray&& aData,
+                                                             GpBytesArray&& aHash,
+                                                             GpBytesArray&& aSign,
+                                                             GpBytesArray&& aPublicKey) noexcept;
+                                UnoSemuxTransactionSign     (const UnoSemuxTransactionSign& aSign);
+                                UnoSemuxTransactionSign     (UnoSemuxTransactionSign&& aSign) noexcept;
+                                ~UnoSemuxTransactionSign    (void) noexcept;
 
-	GpBytesArray			Encode						(void) const;
+    UnoSemuxTransactionSign&    operator=                   (const UnoSemuxTransactionSign& aSign);
+    UnoSemuxTransactionSign&    operator=                   (UnoSemuxTransactionSign&& aSign) noexcept;
+
+    const GpBytesArray&         Data                        (void) const noexcept {return iData;}
+    std::string                 DataHex                     (void) const noexcept {return GpStringOps::SFromBytes(Data());}
+    const GpBytesArray&         Hash                        (void) const noexcept {return iHash;}
+    std::string                 HashHex                     (void) const noexcept {return GpStringOps::SFromBytes(Hash());}
+    const GpBytesArray&         Sign                        (void) const noexcept {return iSign;}
+    std::string                 SignHex                     (void) const noexcept {return GpStringOps::SFromBytes(Sign());}
+    const GpBytesArray&         PublicKey                   (void) const noexcept {return iPublicKey;}
+    std::string                 PublicKeyHex                (void) const noexcept {return GpStringOps::SFromBytes(PublicKey());}
+
+    GpBytesArray                Encode                      (void) const;
+    std::string                 EncodeHex                   (void) const {return GpStringOps::SFromBytes(Encode());}
 
 private:
-	GpBytesArray			iTxData;
-	GpBytesArray			iTxHash;
-	GpBytesArray			iSign;
-	GpBytesArray			iPubKeyNoPrefix;
+    GpBytesArray                iData;
+    GpBytesArray                iHash;
+    GpBytesArray                iSign;
+    GpBytesArray                iPublicKey;
 };
 
 }//namespace UnoSemux

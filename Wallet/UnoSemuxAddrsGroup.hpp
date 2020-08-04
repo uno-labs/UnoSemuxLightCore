@@ -24,6 +24,9 @@ public:
     const GpCryptoKeyFactory&   Factory                 (void) const {return iFactory.VC();}
 
 private:
+    std::string_view            ExtractAddrHex          (GpRawPtrCharR aAddrStrHex) const noexcept;
+
+private:
     GpCryptoKeyFactory::SP      iFactory;
     AddrListT                   iAddrsList;
 };

@@ -21,7 +21,7 @@ UnoSemuxAddr::SP    UnoSemuxAddrsGroup::GenNext (void)
 
 void    UnoSemuxAddrsGroup::Delete (GpRawPtrCharR aAddrStrHex)
 {
-    std::string key(aAddrStrHex.AsStringView());
+    std::string key(ExtractAddrHex(aAddrStrHex));
     if (iAddrsList.erase(key) == 0)
     {
         THROW_GPE("Addres '"_sv + aAddrStrHex.AsStringView() + "' not found"_sv);
@@ -30,7 +30,7 @@ void    UnoSemuxAddrsGroup::Delete (GpRawPtrCharR aAddrStrHex)
 
 UnoSemuxAddr::SP    UnoSemuxAddrsGroup::Find (GpRawPtrCharR aAddrStrHex)
 {
-    std::string key(aAddrStrHex.AsStringView());
+    std::string key(ExtractAddrHex(aAddrStrHex));
     auto iter = iAddrsList.find(key);
 
     if (iter == iAddrsList.end())
@@ -43,8 +43,19 @@ UnoSemuxAddr::SP    UnoSemuxAddrsGroup::Find (GpRawPtrCharR aAddrStrHex)
 
 bool    UnoSemuxAddrsGroup::IsContainAddr (GpRawPtrCharR aAddrStrHex) const
 {
-    std::string key(aAddrStrHex.AsStringView());
+    std::string key(ExtractAddrHex(aAddrStrHex));
     return iAddrsList.count(key) > 0;
+}
+
+std::string_view    UnoSemuxAddrsGroup::ExtractAddrHex (GpRawPtrCharR aAddrStrHex) const noexcept
+{
+    if (aAddrStrHex.IsEqualByArgLen("0x"_sv))
+    {
+        return aAddrStrHex.SubrangeBeginOffset(2_cnt).AsStringView();
+    } else
+    {
+        return aAddrStrHex.AsStringView();
+    }
 }
 
 }//namespace UnoSemux

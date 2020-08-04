@@ -37,6 +37,26 @@ UnoSemuxTransactionSign::~UnoSemuxTransactionSign (void) noexcept
 {
 }
 
+UnoSemuxTransactionSign&    UnoSemuxTransactionSign::operator= (const UnoSemuxTransactionSign& aSign)
+{
+    iData       = aSign.iData;
+    iHash       = aSign.iHash;
+    iSign       = aSign.iSign;
+    iPublicKey  = aSign.iPublicKey;
+
+    return *this;
+}
+
+UnoSemuxTransactionSign&    UnoSemuxTransactionSign::operator= (UnoSemuxTransactionSign&& aSign) noexcept
+{
+    iData       = std::move(aSign.iData);
+    iHash       = std::move(aSign.iHash);
+    iSign       = std::move(aSign.iSign);
+    iPublicKey  = std::move(aSign.iPublicKey);
+
+    return *this;
+}
+
 GpBytesArray    UnoSemuxTransactionSign::Encode (void) const
 {
     GpBytesArray res;

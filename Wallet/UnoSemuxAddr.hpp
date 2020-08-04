@@ -13,11 +13,15 @@ public:
     using KeyPairT  = GpCryptoKeyPair_Ed25519;
 
 public:
-                                UnoSemuxAddr        (const UnoSemuxAddr& aAddr) = delete;
-                                UnoSemuxAddr        (UnoSemuxAddr&& aAddr) = delete;
+                                UnoSemuxAddr        (void);
+                                UnoSemuxAddr        (const UnoSemuxAddr& aAddr);
+                                UnoSemuxAddr        (UnoSemuxAddr&& aAddr);
                                 UnoSemuxAddr        (const KeyPairT& aKeyPair);
                                 UnoSemuxAddr        (KeyPairT&& aKeyPair);
     virtual                     ~UnoSemuxAddr       (void) noexcept;
+
+    UnoSemuxAddr&               operator=           (const UnoSemuxAddr& aAddr);
+    UnoSemuxAddr&               operator=           (UnoSemuxAddr&& aAddr);
 
     const KeyPairT&             KeyPair             (void) const noexcept {return iKeyPair;}
 
@@ -28,7 +32,7 @@ public:
     std::string                 AddrStrHex          (void) const noexcept {return GpStringOps::SFromBytes(iAddr);}
 
     s_int_64                    Nonce               (void) const noexcept {return iNonce;}
-    s_int_64                    IncNonce            (void) noexcept {return ++iNonce;}
+    s_int_64                    IncNonce            (void) noexcept {iNonce = NumOps::SAdd<decltype(iNonce)>(iNonce, 1); return iNonce;}
     void                        SetNonce            (const s_int_64 aNonce) noexcept {iNonce = aNonce;}
 
     std::string_view            Name                (void) const noexcept {return iName;}

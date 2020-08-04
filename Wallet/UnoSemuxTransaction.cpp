@@ -2,6 +2,10 @@
 
 namespace UnoSemux {
 
+UnoSemuxTransaction::UnoSemuxTransaction (void) noexcept
+{
+}
+
 UnoSemuxTransaction::UnoSemuxTransaction (const UnoSemuxTransaction& aTransaction):
 iNetworkType(aTransaction.iNetworkType),
 iType(aTransaction.iType),
@@ -179,6 +183,38 @@ UnoSemuxTransaction UnoSemuxTransaction::SCall (const NetworkTypeTE     aNetwork
                                aGasPrice);
 }
 
+UnoSemuxTransaction&    UnoSemuxTransaction::operator= (const UnoSemuxTransaction& aTransaction)
+{
+    iNetworkType    = aTransaction.iNetworkType;
+    iType           = aTransaction.iType;
+    iAddrTo         = aTransaction.iAddrTo;
+    iValue          = aTransaction.iValue;
+    iFee            = aTransaction.iFee;
+    iNonce          = aTransaction.iNonce;
+    iTimestamp      = aTransaction.iTimestamp;
+    iData           = aTransaction.iData;
+    iGas            = aTransaction.iGas;
+    iGasPrice       = aTransaction.iGasPrice;
+
+    return *this;
+}
+
+UnoSemuxTransaction&    UnoSemuxTransaction::operator= (UnoSemuxTransaction&& aTransaction) noexcept
+{
+    iNetworkType    = std::move(aTransaction.iNetworkType);
+    iType           = std::move(aTransaction.iType);
+    iAddrTo         = std::move(aTransaction.iAddrTo);
+    iValue          = std::move(aTransaction.iValue);
+    iFee            = std::move(aTransaction.iFee);
+    iNonce          = std::move(aTransaction.iNonce);
+    iTimestamp      = std::move(aTransaction.iTimestamp);
+    iData           = std::move(aTransaction.iData);
+    iGas            = std::move(aTransaction.iGas);
+    iGasPrice       = std::move(aTransaction.iGasPrice);
+
+    return *this;
+}
+
 GpBytesArray    UnoSemuxTransaction::Encode (void) const
 {
     GpBytesArray res;
@@ -204,6 +240,12 @@ GpBytesArray    UnoSemuxTransaction::Encode (void) const
     }
 
     return res;
+}
+
+std::string UnoSemuxTransaction::EncodeHex (void) const
+{
+    GpBytesArray data = Encode();
+    return GpStringOps::SFromBytes(data);
 }
 
 }//namespace UnoSemux

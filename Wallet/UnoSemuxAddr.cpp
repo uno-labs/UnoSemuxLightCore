@@ -2,6 +2,26 @@
 
 namespace UnoSemux {
 
+UnoSemuxAddr::UnoSemuxAddr (void)
+{
+}
+
+UnoSemuxAddr::UnoSemuxAddr (const UnoSemuxAddr& aAddr):
+iKeyPair(aAddr.iKeyPair),
+iAddr(aAddr.iAddr),
+iNonce(aAddr.iNonce),
+iName(aAddr.iName)
+{
+}
+
+UnoSemuxAddr::UnoSemuxAddr (UnoSemuxAddr&& aAddr):
+iKeyPair(std::move(aAddr.iKeyPair)),
+iAddr(std::move(aAddr.iAddr)),
+iNonce(std::move(aAddr.iNonce)),
+iName(std::move(aAddr.iName))
+{
+}
+
 UnoSemuxAddr::UnoSemuxAddr (const KeyPairT& aKeyPair):
 iKeyPair(aKeyPair)
 {
@@ -21,6 +41,26 @@ UnoSemuxAddr::~UnoSemuxAddr (void) noexcept
     iNonce = 0;
 }
 
+UnoSemuxAddr&   UnoSemuxAddr::operator= (const UnoSemuxAddr& aAddr)
+{
+    iKeyPair    = aAddr.iKeyPair;
+    iAddr       = aAddr.iAddr;
+    iNonce      = aAddr.iNonce;
+    iName       = aAddr.iName;
+
+    return *this;
+}
+
+UnoSemuxAddr&   UnoSemuxAddr::operator= (UnoSemuxAddr&& aAddr)
+{
+    iKeyPair    = std::move(aAddr.iKeyPair);
+    iAddr       = std::move(aAddr.iAddr);
+    iNonce      = std::move(aAddr.iNonce);
+    iName       = std::move(aAddr.iName);
+
+    return *this;
+}
+
 UnoSemuxTransactionSign UnoSemuxAddr::Sign1 (const UnoSemuxTransaction& aTransaction) const
 {
     GpBytesArray                        transactionBytes    = aTransaction.Encode();
@@ -29,9 +69,9 @@ UnoSemuxTransactionSign UnoSemuxAddr::Sign1 (const UnoSemuxTransaction& aTransac
     GpRawPtrByteR                       pubKey              = iKeyPair.PublicBytes();
 
     return UnoSemuxTransactionSign(std::move(transactionBytes),
-                                   std::move(GpBytesArrayUtils::SMake(hash)),
-                                   std::move(GpBytesArrayUtils::SMake(sign)),
-                                   std::move(GpBytesArrayUtils::SMake(pubKey.AsStringView())));
+                                   GpBytesArrayUtils::SMake(hash),
+                                   GpBytesArrayUtils::SMake(sign),
+                                   GpBytesArrayUtils::SMake(pubKey.AsStringView()));
 }
 
 UnoSemuxTransactionSign UnoSemuxAddr::Sign2 (const UnoSemuxTransaction& aTransaction) const
@@ -42,9 +82,9 @@ UnoSemuxTransactionSign UnoSemuxAddr::Sign2 (const UnoSemuxTransaction& aTransac
     GpRawPtrByteR                       pubKey              = iKeyPair.PublicBytes();
 
     return UnoSemuxTransactionSign(std::move(transactionBytes),
-                                   std::move(GpBytesArrayUtils::SMake(hash)),
-                                   std::move(GpBytesArrayUtils::SMake(sign)),
-                                   std::move(GpBytesArrayUtils::SMake(pubKey.AsStringView())));
+                                   GpBytesArrayUtils::SMake(hash),
+                                   GpBytesArrayUtils::SMake(sign),
+                                   GpBytesArrayUtils::SMake(pubKey.AsStringView()));
 }
 
 void    UnoSemuxAddr::RecalcAddr (void)

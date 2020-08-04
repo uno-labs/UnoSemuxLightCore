@@ -16,7 +16,7 @@ public:
                                 UnoSemuxWallet      (void);
                                 ~UnoSemuxWallet     (void) noexcept;
 
-    UnoSemuxAddr::SP            GenNextRndAddr      (void);
+    UnoSemuxAddr::SP            GenRndAddr          (void);
     UnoSemuxAddr::SP            GenNextHDAddr       (const count_t aHDGroupId);
     UnoSemuxAddr::SP            GenHDAddr           (const count_t aHDGroupId, const count_t aAddrId);
     void                        DeleteAddr          (GpRawPtrCharR aAddrStrHex);

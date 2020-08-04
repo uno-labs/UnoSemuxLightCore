@@ -12,7 +12,7 @@ UnoSemuxWallet::~UnoSemuxWallet (void) noexcept
 {
 }
 
-UnoSemuxAddr::SP    UnoSemuxWallet::GenNextRndAddr (void)
+UnoSemuxAddr::SP    UnoSemuxWallet::GenRndAddr (void)
 {
     return iRndAddrGroup.GenNext();
 }

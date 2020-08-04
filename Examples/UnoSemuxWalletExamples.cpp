@@ -40,7 +40,7 @@ void    UnoSemuxWalletExamples::SExample1 (void)
 
     //Generate new address from random generator (need no mnemonic phrase)
     {
-        UnoSemuxAddr::SP rnd_Addr_1 = wallet.GenNextRndAddr();
+        UnoSemuxAddr::SP rnd_Addr_1 = wallet.GenRndAddr();
         std::cout << "New RND address_1 '0x" << rnd_Addr_1.VC().AddrStrHex() << "'" << std::endl;
     }
 

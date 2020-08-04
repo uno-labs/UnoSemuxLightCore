@@ -17,11 +17,8 @@ public:
     using TransactionTypeT      = UnoSemuxTransactionType;
     using TransactionTypeTE     = TransactionTypeT::EnumT;
 
-private:
-
-
 public:
-                                UnoSemuxTransaction     (void) noexcept = delete;
+                                UnoSemuxTransaction     (void) noexcept;
                                 UnoSemuxTransaction     (const UnoSemuxTransaction& aTransaction);
                                 UnoSemuxTransaction     (UnoSemuxTransaction&& aTransaction) noexcept;
                                 UnoSemuxTransaction     (const NetworkTypeTE        aNetworkType,
@@ -80,6 +77,9 @@ public:
                                                          const semgas_t             aGas,
                                                          const nanosem_t            aGasPrice);
 
+    UnoSemuxTransaction&        operator=               (const UnoSemuxTransaction& aTransaction);
+    UnoSemuxTransaction&        operator=               (UnoSemuxTransaction&& aTransaction) noexcept;
+
     NetworkTypeT                NetworkType             (void) const noexcept {return iNetworkType;}
     TransactionTypeT            Type                    (void) const noexcept {return iType;}
     const GpBytesArray&         AddrTo                  (void) const noexcept {return iAddrTo;}
@@ -94,19 +94,20 @@ public:
     nanosem_t                   GasPrice                (void) const noexcept {return iGasPrice;}
 
     GpBytesArray                Encode                  (void) const;
+    std::string                 EncodeHex               (void) const;
     //void                      Decoode                 (GpRawPtrByteR aData) const;
 
 private:
-    NetworkTypeTE           iNetworkType;
-    TransactionTypeTE       iType;
-    GpBytesArray            iAddrTo;
-    nanosem_t               iValue      = 0_usem;
-    nanosem_t               iFee        = 0_usem;
-    s_int_64                iNonce      = 0;
-    unix_ts_ms_t            iTimestamp  = 0_unix_ts_s;
-    GpBytesArray            iData;
-    semgas_t                iGas        = 0_semgas;
-    nanosem_t               iGasPrice   = 0_usem;
+    NetworkTypeTE               iNetworkType;
+    TransactionTypeTE           iType;
+    GpBytesArray                iAddrTo;
+    nanosem_t                   iValue      = 0_usem;
+    nanosem_t                   iFee        = 0_usem;
+    s_int_64                    iNonce      = 0;
+    unix_ts_ms_t                iTimestamp  = 0_unix_ts_s;
+    GpBytesArray                iData;
+    semgas_t                    iGas        = 0_semgas;
+    nanosem_t                   iGasPrice   = 0_usem;
 };
 
 }//namespace UnoSemux

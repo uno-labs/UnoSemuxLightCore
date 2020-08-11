@@ -56,7 +56,6 @@ GpCryptoKeyFactory::SP  UnoSemuxWalletUtils::SNewHDKeyFactoryMnemonic (GpRawPtrC
     // Validate mnemonic
     THROW_GPE_COND_CHECK_M(SValidateMnemonic(aMnemonic), "Invalid mnemonic"_sv);
 
-
     // Generate seed from mnemonic
     GpSecureStorage seed = SSeedFromMnemonic(aMnemonic, aPassword);
 

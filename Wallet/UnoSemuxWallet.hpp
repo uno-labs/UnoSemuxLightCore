@@ -28,13 +28,13 @@ public:
     const HDAddrGroupsT&        HDAddrGroups        (void) const noexcept {return iHDAddrGroups;}
     count_t                     HDAddrGroupLastId   (void) const noexcept {return iHDAddrGroupLastId;}
 
-    GpBytesArray                Seserialize         (GpRawPtrCharR aPassword) const;
-    std::string                 SeserializeHex      (GpRawPtrCharR aPassword) const;
-    //GpBytesArray              SeserializeBase64   (GpRawPtrCharR aPassword) const;
+    GpBytesArray                Serialize           (GpRawPtrCharR aPassword) const;
+    std::string                 SerializeHex        (GpRawPtrCharR aPassword) const;
+    //GpBytesArray              SerializeBase64     (GpRawPtrCharR aPassword) const;
 
-    void                        Deseserialize       (GpRawPtrByteR aData, GpRawPtrCharR aPassword);
-    void                        DeseserializeHex    (GpRawPtrCharR aDataStrHex, GpRawPtrCharR aPassword);
-    void                        DeseserializeBase64 (GpRawPtrCharR aDataBase64, GpRawPtrCharR aPassword);
+    void                        Deserialize         (GpRawPtrByteR aData, GpRawPtrCharR aPassword);
+    void                        DeserializeHex      (GpRawPtrCharR aDataStrHex, GpRawPtrCharR aPassword);
+    void                        DeserializeBase64   (GpRawPtrCharR aDataBase64, GpRawPtrCharR aPassword);
 
 private:
     UnoSemuxAddrsGroup          iRndAddrGroup;

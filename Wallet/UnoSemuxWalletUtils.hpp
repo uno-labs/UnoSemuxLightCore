@@ -26,11 +26,11 @@ public:
     static UnoSemuxAddr::SP         SNewAddrFromPrivateKeyStrHex    (GpRawPtrCharR aPrivateKeyStrHex);
 
     static UnoSemuxWallet::SP       SWalletDeserialize              (GpRawPtrCharR aPassword);
-    static GpBytesArray             SWalletSeserialize              (const UnoSemuxWallet&  aWallet,
+    static GpBytesArray             SWalletSerialize                (const UnoSemuxWallet&  aWallet,
                                                                      GpRawPtrCharR          aPassword);
 
 private:
-    static void                     SAddrGroupSeserialize           (GpByteWriter&              aWriter,
+    static void                     SAddrGroupSerialize         (GpByteWriter&              aWriter,
                                                                      const UnoSemuxAddrsGroup&  aAddrGroup);
 
 private:

@@ -8,9 +8,8 @@ void    UnoSemuxWalletExamples::SExample1 (void)
 
     //Generate new mnemonic phrase using random generator
     GpSecureStorage     mnemonic    = UnoSemuxWalletUtils::SNewMnemonic();
-    std::string         mnemonicStr = std::string(mnemonic.ViewR().R().AsStringView());
 
-    std::cout << "New mnemonic phrase: '" << mnemonicStr << "'\n";
+    std::cout << "New mnemonic phrase: '" << mnemonic.ViewR().R().AsStringView() << "'\n";
 
     //Create empty wallet
     UnoSemuxWallet wallet;

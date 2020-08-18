@@ -56,7 +56,6 @@ GpCryptoKeyFactory::SP  UnoSemuxWalletUtils::SNewHDKeyFactoryMnemonic (GpRawPtrC
     // Validate mnemonic
     THROW_GPE_COND_CHECK_M(SValidateMnemonic(aMnemonic), "Invalid mnemonic"_sv);
 
-
     // Generate seed from mnemonic
     GpSecureStorage seed = SSeedFromMnemonic(aMnemonic, aPassword);
 
@@ -100,7 +99,7 @@ UnoSemuxWallet::SP  UnoSemuxWalletUtils::SWalletDeserialize (GpRawPtrCharR aPass
     THROW_NOT_IMPLEMENTED();
 }
 
-GpBytesArray    UnoSemuxWalletUtils::SWalletSeserialize (const UnoSemuxWallet&  aWallet,
+GpBytesArray    UnoSemuxWalletUtils::SWalletSerialize (const UnoSemuxWallet&    aWallet,
                                                          GpRawPtrCharR          aPassword)
 {
     GpSecureStorage serializedWalletData;
@@ -123,7 +122,7 @@ GpBytesArray    UnoSemuxWalletUtils::SWalletSeserialize (const UnoSemuxWallet&  
         // Rnd addresses
         {
             writer.BytesWithLen("RND"_sv);
-            SAddrGroupSeserialize(writer, aWallet.RndAddrGroup());
+            SAddrGroupSerialize(writer, aWallet.RndAddrGroup());
         }
 
         // HD addresses + factory
@@ -151,7 +150,7 @@ GpBytesArray    UnoSemuxWalletUtils::SWalletSeserialize (const UnoSemuxWallet&  
                 hdGroup.Factory().Serialize(writer);
 
                 //Addresses
-                SAddrGroupSeserialize(writer, hdGroup);
+                SAddrGroupSerialize(writer, hdGroup);
             }
         }
     }
@@ -181,8 +180,8 @@ GpBytesArray    UnoSemuxWalletUtils::SWalletSeserialize (const UnoSemuxWallet&  
     return encriptedWalletData;
 }
 
-void    UnoSemuxWalletUtils::SAddrGroupSeserialize (GpByteWriter&               aWriter,
-                                                    const UnoSemuxAddrsGroup&   aAddrGroup)
+void    UnoSemuxWalletUtils::SAddrGroupSerialize (GpByteWriter&             aWriter,
+                                                  const UnoSemuxAddrsGroup& aAddrGroup)
 {
     const UnoSemuxAddrsGroup::AddrListT& addrsList = aAddrGroup.AddrsList();
 

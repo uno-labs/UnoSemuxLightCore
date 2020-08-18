@@ -84,38 +84,38 @@ void    UnoSemuxWallet::DeleteHDGroup (const count_t aHDGroupId)
     iHDAddrGroups.erase(aHDGroupId);
 }
 
-GpBytesArray    UnoSemuxWallet::Seserialize (GpRawPtrCharR aPassword) const
+GpBytesArray    UnoSemuxWallet::Serialize (GpRawPtrCharR aPassword) const
 {
-    return UnoSemuxWalletUtils::SWalletSeserialize(*this, aPassword);
+    return UnoSemuxWalletUtils::SWalletSerialize(*this, aPassword);
 }
 
-std::string UnoSemuxWallet::SeserializeHex (GpRawPtrCharR aPassword) const
+std::string UnoSemuxWallet::SerializeHex (GpRawPtrCharR aPassword) const
 {
-    GpBytesArray data = Seserialize(aPassword);
+    GpBytesArray data = Serialize(aPassword);
     return GpStringOps::SFromBytes(data);
 }
 
-/*GpBytesArray  UnoSemuxWallet::SeserializeBase64 (GpRawPtrCharR aPassword) const
+/*GpBytesArray  UnoSemuxWallet::SerializeBase64 (GpRawPtrCharR aPassword) const
 {
-    GpBytesArray data = Seserialize(aPassword);
+    GpBytesArray data = Serialize(aPassword);
     return GpEncoders::SBinToBase64(data);
 }*/
 
-void    UnoSemuxWallet::Deseserialize (GpRawPtrByteR aData, GpRawPtrCharR aPassword)
+void    UnoSemuxWallet::Deserialize (GpRawPtrByteR aData, GpRawPtrCharR aPassword)
 {
 
 }
 
-void    UnoSemuxWallet::DeseserializeHex (GpRawPtrCharR aDataStrHex, GpRawPtrCharR aPassword)
+void    UnoSemuxWallet::DeserializeHex (GpRawPtrCharR aDataStrHex, GpRawPtrCharR aPassword)
 {
     GpBytesArray data = GpStringOps::SToBytes(aDataStrHex);
-    return Deseserialize(data, aPassword);
+    return Deserialize(data, aPassword);
 }
 
-/*void  UnoSemuxWallet::DeseserializeBase64 (GpRawPtrCharR aDataBase64, GpRawPtrCharR aPassword)
+/*void  UnoSemuxWallet::DeserializeBase64   (GpRawPtrCharR aDataBase64, GpRawPtrCharR aPassword)
 {
     GpBytesArray data = GpEncoders::SBase64ToBin(data);
-    return Deseserialize(data, aPassword);
+    return Deserialize(data, aPassword);
 }*/
 
 }//UnoSemux

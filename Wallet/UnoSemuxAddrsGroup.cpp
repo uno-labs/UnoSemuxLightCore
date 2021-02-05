@@ -10,52 +10,69 @@ iFactory(std::move(aFactory))
 
 UnoSemuxAddrsGroup::~UnoSemuxAddrsGroup (void) noexcept
 {
+	Clear();
 }
 
-UnoSemuxAddr::SP    UnoSemuxAddrsGroup::GenNext (void)
+void	UnoSemuxAddrsGroup::Clear (void) noexcept
 {
-    UnoSemuxAddr::SP addr = UnoSemuxWalletUtils::SNewAddrFromFactory(iFactory.V());
-    iAddrsList.emplace(addr.VCn().AddrStrHex(), addr);
-    return addr;
+	iFactory.Clear();
+	iAddrsList.clear();
 }
 
-void    UnoSemuxAddrsGroup::Delete (GpRawPtrCharR aAddrStrHex)
+void	UnoSemuxAddrsGroup::Set (UnoSemuxAddrsGroup&& aGroup) noexcept
 {
-    std::string key(ExtractAddrHex(aAddrStrHex));
-    if (iAddrsList.erase(key) == 0)
-    {
-        THROW_GPE("Addres '"_sv + aAddrStrHex.AsStringView() + "' not found"_sv);
-    }
+	Clear();
+
+	iFactory	= std::move(aGroup.iFactory);
+	iAddrsList	= std::move(aGroup.iAddrsList);
+
+	aGroup.Clear();
 }
 
-UnoSemuxAddr::SP    UnoSemuxAddrsGroup::Find (GpRawPtrCharR aAddrStrHex)
+UnoSemuxAddr::SP	UnoSemuxAddrsGroup::GenNext (void)
 {
-    std::string key(ExtractAddrHex(aAddrStrHex));
-    auto iter = iAddrsList.find(key);
-
-    if (iter == iAddrsList.end())
-    {
-        THROW_GPE("Addres '"_sv + aAddrStrHex.AsStringView() + "' not found"_sv);
-    }
-
-    return iter->second;
+	UnoSemuxAddr::SP addr = UnoSemuxWalletUtils::SNewAddrFromFactory(iFactory.V());
+	iAddrsList.emplace(addr.VCn().AddrStrHex(), addr);
+	return addr;
 }
 
-bool    UnoSemuxAddrsGroup::IsContainAddr (GpRawPtrCharR aAddrStrHex) const
+void	UnoSemuxAddrsGroup::Delete (GpRawPtrCharR aAddrStrHex)
 {
-    std::string key(ExtractAddrHex(aAddrStrHex));
-    return iAddrsList.count(key) > 0;
+	std::string key(ExtractAddrHex(aAddrStrHex));
+	if (iAddrsList.erase(key) == 0)
+	{
+		THROW_GPE("Addres '"_sv + aAddrStrHex.AsStringView() + "' not found"_sv);
+	}
 }
 
-std::string_view    UnoSemuxAddrsGroup::ExtractAddrHex (GpRawPtrCharR aAddrStrHex) const noexcept
+UnoSemuxAddr::SP	UnoSemuxAddrsGroup::Find (GpRawPtrCharR aAddrStrHex)
 {
-    if (aAddrStrHex.IsEqualByArgLen("0x"_sv))
-    {
-        return aAddrStrHex.SubrangeBeginOffset(2_cnt).AsStringView();
-    } else
-    {
-        return aAddrStrHex.AsStringView();
-    }
+	std::string key(ExtractAddrHex(aAddrStrHex));
+	auto iter = iAddrsList.find(key);
+
+	if (iter == iAddrsList.end())
+	{
+		THROW_GPE("Addres '"_sv + aAddrStrHex.AsStringView() + "' not found"_sv);
+	}
+
+	return iter->second;
+}
+
+bool	UnoSemuxAddrsGroup::IsContainAddr (GpRawPtrCharR aAddrStrHex) const
+{
+	std::string key(ExtractAddrHex(aAddrStrHex));
+	return iAddrsList.count(key) > 0;
+}
+
+std::string_view	UnoSemuxAddrsGroup::ExtractAddrHex (GpRawPtrCharR aAddrStrHex) const noexcept
+{
+	if (aAddrStrHex.IsEqualByArgLen("0x"_sv))
+	{
+		return aAddrStrHex.SubrangeBeginOffset(2_cnt).AsStringView();
+	} else
+	{
+		return aAddrStrHex.AsStringView();
+	}
 }
 
 }//namespace UnoSemux

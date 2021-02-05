@@ -4,7 +4,7 @@
 namespace UnoSemux {
 
 UnoSemuxWallet::UnoSemuxWallet (void):
-iRndAddrGroup(GpCryptoKeyFactory_Ed25519_Rnd::SP::SNew())
+iRndAddrGroup(MakeSP<GpCryptoKeyFactory_Ed25519_Rnd>())
 {
 }
 
@@ -12,110 +12,112 @@ UnoSemuxWallet::~UnoSemuxWallet (void) noexcept
 {
 }
 
-UnoSemuxAddr::SP    UnoSemuxWallet::GenRndAddr (void)
+void	UnoSemuxWallet::Clear (void) noexcept
 {
-    return iRndAddrGroup.GenNext();
+	?
+	iRndAddrGroup.Clear();
+	HDAddrGroupsT		iHDAddrGroups;
+	count_t				iHDAddrGroupLastId = 0_cnt;
 }
 
-UnoSemuxAddr::SP    UnoSemuxWallet::GenNextHDAddr (const count_t aHDGroupId)
+void	UnoSemuxWallet::Set (UnoSemuxWallet&& aWallet) noexcept
 {
-    return iHDAddrGroups.at(aHDGroupId).V().GenNext();
+	Clear();
 }
 
-UnoSemuxAddr::SP    UnoSemuxWallet::GenHDAddr (const count_t aHDGroupId, const count_t aAddrId)
+UnoSemuxAddr::SP	UnoSemuxWallet::GenRndAddr (void)
 {
-    THROW_NOT_IMPLEMENTED();
+	return iRndAddrGroup.GenNext();
 }
 
-void    UnoSemuxWallet::DeleteAddr (GpRawPtrCharR aAddrStrHex)
+UnoSemuxAddr::SP	UnoSemuxWallet::GenNextHDAddr (const count_t aHDGroupId)
 {
-    if (iRndAddrGroup.IsContainAddr(aAddrStrHex))
-    {
-        iRndAddrGroup.Delete(aAddrStrHex);
-        return;
-    }
-
-    for (auto& iter: iHDAddrGroups)
-    {
-        auto& g = iter.second.V();
-        if (g.IsContainAddr(aAddrStrHex))
-        {
-            g.Delete(aAddrStrHex);
-            return;
-        }
-    }
-
-    THROW_GPE("Addres '"_sv + aAddrStrHex.AsStringView() + "' not found"_sv);
+	return iHDAddrGroups.at(aHDGroupId)->GenNext();
 }
 
-UnoSemuxAddr::SP    UnoSemuxWallet::FindAddr (GpRawPtrCharR aAddrStrHex)
+UnoSemuxAddr::SP	UnoSemuxWallet::GenHDAddr (const count_t aHDGroupId, const count_t aAddrId)
 {
-    if (iRndAddrGroup.IsContainAddr(aAddrStrHex))
-    {
-        return iRndAddrGroup.Find(aAddrStrHex);
-    }
-
-    for (auto& iter: iHDAddrGroups)
-    {
-        auto& g = iter.second.V();
-
-        if (g.IsContainAddr(aAddrStrHex))
-        {
-            return g.Find(aAddrStrHex);
-        }
-    }
-
-    THROW_GPE("Addres '"_sv + aAddrStrHex.AsStringView() + "' not found"_sv);
+	THROW_NOT_IMPLEMENTED();
 }
 
-count_t UnoSemuxWallet::AddHDGroup (GpRawPtrCharR aMnemonic, GpRawPtrCharR aPassword)
+void	UnoSemuxWallet::DeleteAddr (GpRawPtrCharR aAddrStrHex)
 {
-    GpCryptoKeyFactory::SP hdKeyFactory = UnoSemuxWalletUtils::SNewHDKeyFactoryMnemonic(aMnemonic, aPassword);
+	if (iRndAddrGroup.IsContainAddr(aAddrStrHex))
+	{
+		iRndAddrGroup.Delete(aAddrStrHex);
+		return;
+	}
 
-    iHDAddrGroupLastId++;
+	for (auto& iter: iHDAddrGroups)
+	{
+		auto& g = iter.second.V();
+		if (g.IsContainAddr(aAddrStrHex))
+		{
+			g.Delete(aAddrStrHex);
+			return;
+		}
+	}
 
-    iHDAddrGroups.insert({iHDAddrGroupLastId, UnoSemuxAddrsGroup::SP::SNew(hdKeyFactory)});
-
-    return iHDAddrGroupLastId;
+	THROW_GPE("Addres '"_sv + aAddrStrHex.AsStringView() + "' not found"_sv);
 }
 
-void    UnoSemuxWallet::DeleteHDGroup (const count_t aHDGroupId)
+UnoSemuxAddr::SP	UnoSemuxWallet::FindAddr (GpRawPtrCharR aAddrStrHex)
 {
-    iHDAddrGroups.erase(aHDGroupId);
+	if (iRndAddrGroup.IsContainAddr(aAddrStrHex))
+	{
+		return iRndAddrGroup.Find(aAddrStrHex);
+	}
+
+	for (auto& iter: iHDAddrGroups)
+	{
+		auto& g = iter.second.V();
+
+		if (g.IsContainAddr(aAddrStrHex))
+		{
+			return g.Find(aAddrStrHex);
+		}
+	}
+
+	THROW_GPE("Addres '"_sv + aAddrStrHex.AsStringView() + "' not found"_sv);
 }
 
-GpBytesArray    UnoSemuxWallet::Serialize (GpRawPtrCharR aPassword) const
+count_t	UnoSemuxWallet::AddHDGroup (GpRawPtrCharR aMnemonic, GpRawPtrCharR aPassword)
 {
-    return UnoSemuxWalletUtils::SWalletSerialize(*this, aPassword);
+	GpCryptoKeyFactory::SP hdKeyFactory = UnoSemuxWalletUtils::SNewHDKeyFactoryMnemonic(aMnemonic, aPassword);
+
+	iHDAddrGroupLastId++;
+
+	iHDAddrGroups.insert({iHDAddrGroupLastId, MakeSP<UnoSemuxAddrsGroup>(hdKeyFactory)});
+
+	return iHDAddrGroupLastId;
 }
 
-std::string UnoSemuxWallet::SerializeHex (GpRawPtrCharR aPassword) const
+void	UnoSemuxWallet::DeleteHDGroup (const count_t aHDGroupId)
 {
-    GpBytesArray data = Serialize(aPassword);
-    return GpStringOps::SFromBytes(data);
+	iHDAddrGroups.erase(aHDGroupId);
 }
 
-/*GpBytesArray  UnoSemuxWallet::SerializeBase64 (GpRawPtrCharR aPassword) const
+GpBytesArray	UnoSemuxWallet::Serialize (GpRawPtrCharR aPassword) const
 {
-    GpBytesArray data = Serialize(aPassword);
-    return GpEncoders::SBinToBase64(data);
-}*/
+	return UnoSemuxWalletUtils::SWalletSerialize(*this, aPassword);
+}
 
-void    UnoSemuxWallet::Deserialize (GpRawPtrByteR aData, GpRawPtrCharR aPassword)
+std::string	UnoSemuxWallet::SerializeHex (GpRawPtrCharR aPassword) const
 {
+	GpBytesArray data = Serialize(aPassword);
+	return StrOps::SFromBytes(data);
+}
+
+void	UnoSemuxWallet::Deserialize (GpRawPtrByteR aData, GpRawPtrCharR aPassword)
+{
+	UnoSemuxWallet::SP wallet = UnoSemuxWalletUtils::SWalletDeserialize(aData, aPassword);
 
 }
 
-void    UnoSemuxWallet::DeserializeHex (GpRawPtrCharR aDataStrHex, GpRawPtrCharR aPassword)
+void	UnoSemuxWallet::DeserializeHex (GpRawPtrCharR aDataStrHex, GpRawPtrCharR aPassword)
 {
-    GpBytesArray data = GpStringOps::SToBytes(aDataStrHex);
-    return Deserialize(data, aPassword);
+	GpBytesArray data = StrOps::SToBytes(aDataStrHex);
+	return Deserialize(data, aPassword);
 }
-
-/*void  UnoSemuxWallet::DeserializeBase64   (GpRawPtrCharR aDataBase64, GpRawPtrCharR aPassword)
-{
-    GpBytesArray data = GpEncoders::SBase64ToBin(data);
-    return Deserialize(data, aPassword);
-}*/
 
 }//UnoSemux

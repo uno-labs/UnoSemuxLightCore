@@ -2,14 +2,14 @@
 
 namespace UnoSemux {
 
-void    UnoSemuxLightCore::SInit (void)
+void	UnoSemuxLightCore::SInit (void)
 {
-    GpCryptoCore::SInit();
+	GpCryptoCore::SInit();
 }
 
-void    UnoSemuxLightCore::SClear (void)
+void	UnoSemuxLightCore::SClear (void)
 {
-    GpCryptoCore::SClear();
+	GpCryptoCore::SClear();
 }
 
 }//namespace UnoSemux

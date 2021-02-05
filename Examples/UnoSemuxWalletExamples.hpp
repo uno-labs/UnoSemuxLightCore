@@ -7,7 +7,7 @@ using namespace UnoSemux;
 class UNOSEMUXLIGHTCORE_API UnoSemuxWalletExamples
 {
 public:
-                    UnoSemuxWalletExamples      (void) = delete;
+					UnoSemuxWalletExamples		(void) = delete;
 
-    static void     SExample1                   (void);
+	static void		SExample1					(void);
 };
